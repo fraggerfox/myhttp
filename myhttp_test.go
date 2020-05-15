@@ -120,6 +120,8 @@ func TestValidateURLs(t *testing.T) {
 	}
 }
 
+// Functional Tests
+
 func TestFetchURLContentValidURL(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "<html><body>Hello World!</body></html>")
@@ -173,8 +175,6 @@ func TestFetchURLContentInvalidProtocol(t *testing.T) {
 		t.Errorf("actual.content (%s) does not match expectedContent (%s)", actual.content, expectedContent)
 	}
 }
-
-// Functional Tests
 
 func TestStartWithProperParameters(t *testing.T) {
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
