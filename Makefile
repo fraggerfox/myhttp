@@ -12,24 +12,20 @@ build:
 
 clean:
 	go clean -x
-	rm -f cover*
+	rm -f coverage*
 
 test:
-	go test -cover -check.f "myhttpSuite.*" -check.vv .
+	go test -test.v -run ''
 
 cover:
-	go test -coverprofile cover.out
-	go tool cover -html=cover.out -o cover.html
-
-depends:
-	go get -u -v gopkg.in/check.v1
+	go test -cover
+	go test -coverprofile=coverage.out
+	go tool cover -html=coverage.out -o coverage.html
 
 help:
 	@echo "------------------ How to use this Makefile ------------------"
 	@echo "make build   - Builds the executable."
 	@echo "make clean   - Cleans the work directory."
-	@echo "make depends - Downloads the check.v1 dependency framework"
-	@echo "               needed for running unit tests."
 	@echo "make help    - Show this help text."
 	@echo "make test    - Runs the Unit tests and shows code coverage."
 	@echo "make cover   - Generates HTML code coverage report."

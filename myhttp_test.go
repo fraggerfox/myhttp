@@ -6,20 +6,13 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"reflect"
 	"testing"
-
-	. "gopkg.in/check.v1"
 )
-
-func Test(t *testing.T) { TestingT(t) }
-
-type myhttpSuite struct{}
-
-var _ = Suite(&myhttpSuite{})
 
 // Unit tests
 
-func (s *myhttpSuite) Test_parseArgs_WithoutParams(c *C) {
+func TestParseArgsWithoutParams(t *testing.T) {
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	os.Args = []string{"/path/to/exec.ext"}
 
@@ -28,11 +21,16 @@ func (s *myhttpSuite) Test_parseArgs_WithoutParams(c *C) {
 
 	actualJobCount, actualRawUrls := parseArgs()
 
-	c.Assert(actualJobCount, Equals, expectedJobCount)
-	c.Assert(actualRawUrls, DeepEquals, expectedRawUrls)
+ 	if actualJobCount != expectedJobCount {
+		t.Errorf("actualJobCount (%d) does not match expectedJobCount (%d)", actualJobCount, expectedJobCount)
+	}
+
+	if !reflect.DeepEqual(actualRawUrls, expectedRawUrls) {
+		t.Errorf("actualRawUrls (%s) does not match expectedRawUrls (%s)", actualRawUrls, expectedRawUrls)
+	}
 }
 
-func (s *myhttpSuite) Test_parseArgs_WithParallel(c *C) {
+func TestParseArgsWithParallel(t *testing.T) {
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	os.Args = []string{"/path/to/exec.ext", "-parallel", "35"}
 
@@ -41,11 +39,16 @@ func (s *myhttpSuite) Test_parseArgs_WithParallel(c *C) {
 
 	actualJobCount, actualRawUrls := parseArgs()
 
-	c.Assert(actualJobCount, Equals, expectedJobCount)
-	c.Assert(actualRawUrls, DeepEquals, expectedRawUrls)
+ 	if actualJobCount != expectedJobCount {
+		t.Errorf("actualJobCount (%d) does not match expectedJobCount (%d)", actualJobCount, expectedJobCount)
+	}
+
+	if !reflect.DeepEqual(actualRawUrls, expectedRawUrls) {
+		t.Errorf("actualRawUrls (%s) does not match expectedRawUrls (%s)", actualRawUrls, expectedRawUrls)
+	}
 }
 
-func (s *myhttpSuite) Test_parseArgs_WithUrls(c *C) {
+func TestParseArgsWithUrls(t *testing.T) {
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	os.Args = []string{"/path/to/exec.ext", "example.com", "http://example.org"}
 
@@ -54,11 +57,16 @@ func (s *myhttpSuite) Test_parseArgs_WithUrls(c *C) {
 
 	actualJobCount, actualRawUrls := parseArgs()
 
-	c.Assert(actualJobCount, Equals, expectedJobCount)
-	c.Assert(actualRawUrls, DeepEquals, expectedRawUrls)
+ 	if actualJobCount != expectedJobCount {
+		t.Errorf("actualJobCount (%d) does not match expectedJobCount (%d)", actualJobCount, expectedJobCount)
+	}
+
+	if !reflect.DeepEqual(actualRawUrls, expectedRawUrls) {
+		t.Errorf("actualRawUrls (%s) does not match expectedRawUrls (%s)", actualRawUrls, expectedRawUrls)
+	}
 }
 
-func (s *myhttpSuite) Test_parseArgs_WithUrlsAndParallel(c *C) {
+func TestParseArgsWithUrlsAndParallel(t *testing.T) {
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	os.Args = []string{"/path/to/exec.ext", "-parallel", "35", "example.com", "http://example.org"}
 
@@ -67,41 +75,52 @@ func (s *myhttpSuite) Test_parseArgs_WithUrlsAndParallel(c *C) {
 
 	actualJobCount, actualRawUrls := parseArgs()
 
-	c.Assert(actualJobCount, Equals, expectedJobCount)
-	c.Assert(actualRawUrls, DeepEquals, expectedRawUrls)
+ 	if actualJobCount != expectedJobCount {
+		t.Errorf("actualJobCount (%d) does not match expectedJobCount (%d)", actualJobCount, expectedJobCount)
+	}
+
+	if !reflect.DeepEqual(actualRawUrls, expectedRawUrls) {
+		t.Errorf("actualRawUrls (%s) does not match expectedRawUrls (%s)", actualRawUrls, expectedRawUrls)
+	}
 }
 
-func (s *myhttpSuite) Test_generateMD5FromContent(c *C) {
+func TestGenerateMD5FromContent(t *testing.T) {
 	content := []byte("Hello, World!")
 
 	expectedMD5 := "65a8e27d8879283831b664bd8b7f0ad4"
 
 	actualMD5 := generateMD5FromContent(content)
 
-	c.Assert(actualMD5, Equals, expectedMD5)
+ 	if actualMD5 != expectedMD5 {
+		t.Errorf("actualMD5 (%s) does not match expectedMD5 (%s)", actualMD5, expectedMD5)
+	}
 }
 
-func (s *myhttpSuite) Test_parseRawURLs(c *C) {
+func TestParseRawURLs(t *testing.T) {
 	rawUrls := []string{"example.com", "http://example.org"}
 
 	expectedUrls := []string{"http://example.com", "http://example.org"}
 
 	actualUrls := parseRawURLs(rawUrls)
 
-	c.Assert(actualUrls, DeepEquals, expectedUrls)
+ 	if !reflect.DeepEqual(actualUrls, expectedUrls) {
+		t.Errorf("actualUrls (%s) does not match expectedUrls (%s)", actualUrls, expectedUrls)
+	}
 }
 
-func (s *myhttpSuite) Test_validateURLs(c *C) {
+func TestValidateURLs(t *testing.T) {
 	parsedUrls := []string{"http://example.com", "http://example"}
 
 	expectedUrls := []string{"http://example.com"}
 
 	actualUrls := validateURLs(parsedUrls)
 
-	c.Assert(actualUrls, DeepEquals, expectedUrls)
+ 	if !reflect.DeepEqual(actualUrls, expectedUrls) {
+		t.Errorf("actualUrls (%s) does not match expectedUrls (%s)", actualUrls, expectedUrls)
+	}
 }
 
-func (s *myhttpSuite) Test_fetchURLContent(c *C) {
+func TestFetchURLContentValidURL(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "<html><body>Hello World!</body></html>")
 	}))
@@ -122,11 +141,16 @@ func (s *myhttpSuite) Test_fetchURLContent(c *C) {
 	actual := <-results
 	close(results)
 
-	c.Assert(actual.url, Equals, expectedUrl)
-	c.Assert(actual.content, DeepEquals, expectedContent)
+ 	if actual.url != expectedUrl {
+		t.Errorf("actual.url (%s) does not match expectedUrl (%s)", actual.content, expectedUrl)
+	}
+
+ 	if !reflect.DeepEqual(actual.content, expectedContent) {
+		t.Errorf("actual.content (%s) does not match expectedContent (%s)", actual.content, expectedContent)
+	}
 }
 
-func (s *myhttpSuite) Test_fetchURLContent_InvalidProtocol(c *C) {
+func TestFetchURLContentInvalidProtocol(t *testing.T) {
 	expectedUrl := "xxx://malformed-url"
 	expectedContent := []byte("Get xxx://malformed-url: unsupported protocol scheme \"xxx\"")
 
@@ -141,14 +165,18 @@ func (s *myhttpSuite) Test_fetchURLContent_InvalidProtocol(c *C) {
 	actual := <-results
 	close(results)
 
-	c.Assert(actual.url, Equals, expectedUrl)
-	c.Assert(actual.content, DeepEquals, expectedContent)
-	c.Assert(1, Equals, 1)
+ 	if actual.url != expectedUrl {
+		t.Errorf("actual.url (%s) does not match expectedUrl (%s)", actual.content, expectedUrl)
+	}
+
+ 	if !reflect.DeepEqual(actual.content, expectedContent) {
+		t.Errorf("actual.content (%s) does not match expectedContent (%s)", actual.content, expectedContent)
+	}
 }
 
 // Functional Tests
 
-func (s *myhttpSuite) Test_start_WithProperParameters(c *C) {
+func TestStartWithProperParameters(t *testing.T) {
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -163,10 +191,12 @@ func (s *myhttpSuite) Test_start_WithProperParameters(c *C) {
 
 	actualResult := start()
 
-	c.Assert(actualResult, Equals, expectedReturn)
+ 	if actualResult != expectedReturn {
+		t.Errorf("actualResult (%d) does not match expectedReturn (%d)", actualResult, expectedReturn)
+	}
 }
 
-func (s *myhttpSuite) Test_start_WithoutParameters(c *C) {
+func TestStartWithoutParameters(t *testing.T) {
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -181,5 +211,7 @@ func (s *myhttpSuite) Test_start_WithoutParameters(c *C) {
 
 	actualResult := start()
 
-	c.Assert(actualResult, Equals, expectedReturn)
+ 	if actualResult != expectedReturn {
+		t.Errorf("actualResult (%d) does not match expectedReturn (%d)", actualResult, expectedReturn)
+	}
 }
