@@ -5,12 +5,15 @@ the [adjust's][1] recruitment process.
 
 The implementation is done using [Golang][2].
 
+## Assumptions
+
+ - The response body's MD5 hash is taken.
+ - Status code of the response is not checked.
+
 ## Implementation details
 
  - The code is written in a procedural fashion.
  - Unit tests are written for the appropriate sections of the code.
- - The only external library used is the extension for Golang's testing library
-   called [check.v1][3]
 
  ## How to build the program
 
@@ -62,9 +65,8 @@ The implementation is done using [Golang][2].
 
 ## License
 
-BSD 2-clause. See [LICENSE][4].
+BSD 2-clause. See [LICENSE][3].
 
 [1]: https://www.stackbuilders.com/
 [2]: https://golang.org
-[3]: https://gopkg.in/check.v1
-[4]: https://github.com/fraggerfox/myhttp/blob/master/LICENSE
+[3]: https://github.com/fraggerfox/myhttp/blob/master/LICENSE
